@@ -3,10 +3,6 @@ Coursera
 For Enterprise
 
 Mechaque
-Back to Week 4
-Lessons
-Prev
-Next
 
 Week 4
 

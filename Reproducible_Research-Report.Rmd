@@ -1,0 +1,77 @@
+---
+title: "Project"
+author: "Mechaque Alex Muiuane"
+date: "April 18, 2017"
+output: html_document
+---
+===============================================================================
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## here I will load the necessary data for this project.
+
+he variables included in this dataset are:
+
+steps: Number of steps taking in a 5-minute interval (missing values are coded as NA)
+date: The date on which the measurement was taken in YYYY-MM-DD format
+interval: Identifier for the 5-minute interval in which measurement was taken
+The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations in this dataset
+```{r}
+getwd()
+ setwd("E:/DScience/Reproducible_Research/Week2/Project-Assignment")
+dir()
+
+activityData <- read.table("./activity.csv", sep = ",",header = TRUE)
+activityData <- activityData[with (activityData, { !(is.na(steps))}),]
+
+head(activityData)
+```
+## Histogram of the total number of steps taken each day
+
+Code bellow will produce an histgram of the total number of steps taken each day.
+
+```{r}
+totalsInDay <- activityData  
+  filter(!is.na(steps)) 
+  group_by(date) 
+  summarise(steps =sum(steps, na.rm = TRUE))
+hist(totalsInDay$steps, breaks = 25, col = "blue", main = "Total steps", xlab = "total steps")
+```
+
+  ## this pare of the assignment will for calculatin the mean and median of number of steps taken each day
+```{r}
+sumBySteps <- group_by(activityData, date)
+head(sumBySteps)
+
+meanMed <- summarize(sumBySteps, total = sum(steps))
+summary(meanMed)
+```
+## This is the plot of time series 
+```{r}
+meanMed_per_day <- aggregate(steps ~ interval, activityData, mean)
+plot(meanMed_per_day$interval, meanMed_per_day$steps, type = "l", main = "average number", xlab = "interval", ylab = "average" )
+```
+## The 5-minute interval that, on average, contains the maximum number of steps
+```{r}
+subset_Max_steps <- which.max(meanMed_per_day$steps)
+meanMed_per_day[subset_Max_steps, ]
+```
+# Code to describe and show a strategy for imputing missing data
+## for the perpouse of this question, I added a new dataset containing all the information of the original data.
+```{r}
+activityDataSource <- read.table("./activity.csv", sep = ",",header = TRUE)
+head(activityDataSource)
+sum(is.na(activityDataSource))
+mean(is.na(activityDataSource))
+activityDataclean <- activityData[with (activityData, { !(is.na(steps))}),]
+```
+# Histogram of the total number of steps taken each day after missing values are imputed
+```{r}
+hist(activityDataclean$steps, main = "Histogram # steps cleaned", xlab = "Total")
+```
+
+
+
+
